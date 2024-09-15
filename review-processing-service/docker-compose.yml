@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+    review-processing-service:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "9080:9080"
+      restart: always  # Restart policy instead of --rm
+      environment:
+        NODE_ENV: production
+
+      profiles:
+        - prod
+      # Uncomment if you need to mount volumes
+      # volumes:
+      #   - .:/usr/app/
+      #   - /usr/app/node_modules
+
+    review-processing-service-dev:
+      build:
+        context: .
+        dockerfile: Dockerfile.dev  # Development Dockerfile
+      develop:
+        watch:
+          - action: sync
+            path: .
+            target: /home/nodeuser/app
+      ports:
+        - "9080:9080"
+      restart: always  # Restart policy instead of --rm
+      environment:
+        NODE_ENV: development
+      command: npm run dev
+
+      profiles:
+        - dev
